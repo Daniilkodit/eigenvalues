@@ -1,0 +1,111 @@
+#include "header.h"
+int Ainit(double* a, int n, int s, const std::string& name)
+{
+        int i, j;
+        if (s == 1)
+        {
+                for (i = 0; i < n; i++)
+                {
+                        for (j = 0; j < i; j++)
+                                a[i * n + j] = n - i;
+                        for (j = i; j < n; j++)
+                                a[i * n + j] = n - j;
+                }
+                return 0;
+        }
+        else if (s == 2)
+        {
+                for (i = 0; i < n; i++)
+                {
+                        for (j = 0; j < n; j++)
+				if(i == j)
+                                	a[i * n + j] = 2;
+				else if(abs(i-j) == 1)
+					a[i * n + j] = -1;
+				else
+					a[i * n + j] = 0;
+                }
+                return 0;
+        }
+        else if (s == 3)
+        {
+                for (i = 0; i < n; i++)
+                {
+			for(j = 0;j<n;j++)
+			{
+				if(i == j && i<n-1 && j<n-1)
+					a[i * n + j] = 1;
+				else if(i == n-1)
+					a[i * n + j] = j+1;
+				else if(j == n-1)
+					a[i * n + j] = i+1;
+				else
+					a[i * n + j] = 0;
+			}
+                }
+                return 0;
+        }
+        else if (s == 4)
+        {
+                for (i = 0; i < n; i++)
+                {
+                        for (j = 0; j < n; j++)
+                                a[i * n + j] = 1.0 / (i + j + 1);
+                }
+                return 0;
+        }
+        else if( s == 0)
+        {
+                std::ifstream in;
+                in.open(name);
+                if (!in.is_open())
+                {
+                        printf("Ошибка: невозможно открыть файл %s\n", name.c_str());
+                        return -1;
+                }
+                for ( i = 0; i < n; i++)
+                {
+                        for (j = 0; j < n; j++)
+                        {
+                                if (!(in >> a[i * n + j]))
+                                {
+                                        printf("Ошибка: недостаточно данных или неверный формат в файле %s\n", name.c_str());
+
+                                        return -2;
+                                }
+                        }
+                }
+                in.close();
+                return 0;
+        }
+        printf("s == %d ?!\n", s);
+        return -3;
+}
+void Print_matrix(int l, int n, int r, double*A)
+{
+        int i, j;
+        int row, col;
+        row = l > r ? r : l;
+        col = n > r ? r : n;
+        for(i = 0; i < row; i++)
+        {
+                for(j = 0; j < col; j++) printf(" %10.3e", A[i * n + j]);
+                printf("\n");
+        }
+        printf("\n");
+}
+double Norm_matrix(double*A,int n)
+{
+	int col,row;
+	double r0=0,r1=0;
+	for( col = 0; col < n; col++)
+        {
+                for( row = 0; row < n; row++)
+                {
+			r1 += fabs(A[row*n+col]);
+		}
+		r0 = r0 > r1 ? r0 : r1;
+                r1 = 0;
+	}
+	return r0;
+}
